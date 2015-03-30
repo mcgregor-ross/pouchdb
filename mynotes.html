@@ -1,0 +1,11 @@
+﻿<div class="small-12 columns">
+                            
+    <h1>My Notes</h1>
+
+    <p>This is a list of the notes you've stored in your local Couch DB.  Try adding a note with no internet connection.  When you're back online, press sync in the sidebar.</p>
+                            
+    <ul>
+        <li data-ng-repeat="doc in docs.all">{{doc.doc.note.value}}</li>
+    </ul>
+
+</div>

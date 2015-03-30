@@ -1,0 +1,4 @@
+{
+    "proxy":"http://exproxy03.corp.edrlandmark.net:8080",
+    "https-proxy":"http://exproxy03.corp.edrlandmark.net:8080"
+}
