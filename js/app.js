@@ -8,16 +8,18 @@ angular.module('foundationDemoApp').controller('OffCanvasDemoCtrl', function ($s
     [
         { name: 'addnote.html', url: 'addnote.html' },
         { name: 'mynotes.html', url: 'mynotes.html' },
-        { name: 'servernotes.html', url: 'servernotes.html' }
+        { name: 'servernotes.html', url: 'servernotes.html' },
+        { name: 'sync.html', url: 'sync.html' }
     ];
     $scope.template = $scope.templates[0];
 
+    $scope.showNote = false;
+
     //Local db
     $scope.db = new PouchDB("example");
-    // Remove db
-    $scope.cloudantDb = new PouchDB('landmark'),
-        remote = "{remoteUrl}",
-        opts = {
+
+    $scope.remote = config.remoteUrl;
+    $scope.opts = {
             continuous: false
         };
 
@@ -34,9 +36,16 @@ angular.module('foundationDemoApp').controller('OffCanvasDemoCtrl', function ($s
 
         $scope.db.post({
             note: $scope.note
-        }, function (err, response) {
+    }, function (err, response) {
             console.log(err || response);
-        });
+    });
+
+        $scope.showNote = !$scope.showNote;
+        setTimeout(function() {
+            $scope.showNote = !$scope.showNote;
+            $scope.note = null;
+            $scope.$apply();
+        }, 1500);
     }
 
     
@@ -60,34 +69,38 @@ angular.module('foundationDemoApp').controller('OffCanvasDemoCtrl', function ($s
     };
 
     $scope.loadViewServerNotesPartial = function () {
-        
+
         var req = {
             method: 'GET',
-            url: '{remoteUrl}'
+            url: config.allDocs
             + '?include_docs=true',
             headers: {
-                'Authorization': ''
+                'Authorization': 'Basic ' + config.key
             }
         }
 
         $http(req)
-          .then(function(response) {
+          .then(function (response) {
               $scope.remoteDocs.all = response.data.rows;
               $scope.template = $scope.templates[2];
-              $scope.$apply();
           })
-          .catch(function(response) {
+          .catch(function (response) {
               console.error('Error', response.status, response.data);
-          })
-        
+          });
+
     };
 
     $scope.sync = function () {
-        $scope.db.replicate.to(remote, opts);
-        $scope.db.replicate.from(remote, opts);
-    }
-    
+        $scope.db.replicate.to($scope.remote, $scope.opts);
+        $scope.db.replicate.from($scope.remote, $scope.opts);
 
+        //$scope.template = $scope.templates[3];
+    }
+
+    $scope.alert = { type: 'success round', msg: "Note added!" };
+
+    
+        
     
 
 });

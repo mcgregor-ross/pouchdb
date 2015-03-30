@@ -6,6 +6,8 @@
     <textarea autofocus placeholder="Type a note..." data-ng-model="note.value"></textarea>
                             
     <button data-ng-click="addNote()">Save</button>
+    
+    <alert ng-show="showNote" type="alert.type">{{alert.msg}}</alert>
 
 </div>
 
